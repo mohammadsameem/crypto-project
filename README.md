@@ -4,7 +4,6 @@
 
 **A working mini-blockchain built from scratch in Python, paired with a live Ethereum smart contract on Sepolia.**
 
-Built for the *Fundamentals of Cryptocurrency* course — covering cryptography, consensus, Bitcoin, and Ethereum through working code, not just theory.
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-%5E0.8.19-363636.svg)](https://soliditylang.org/)
