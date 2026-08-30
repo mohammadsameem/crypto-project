@@ -1,18 +1,50 @@
-## Crypto-Project
-## From Hash to Contract
-A working mini-blockchain built from scratch in Python, paired with a deployed Ethereum smart contract — built to demonstrate the core mechanics of cryptocurrency systems: cryptographic hashing, digital signatures, Proof-of-Work consensus, the UTXO model, and smart contract execution on the EVM.
+<div align="center">
 
-What this project demonstrates
-Most cryptocurrency coursework stays theoretical. This project instead implements the actual mechanics:
+# From Hash to Contract
 
-Real SHA-256 based Proof-of-Work mining with adjustable difficulty
-Real ECDSA (secp256k1) key generation, transaction signing, and signature verification — the same curve used by Bitcoin
-A UTXO-based ledger instead of a simple balance counter
-Merkle trees for transaction bundling and proof verification
-Tamper detection: altering any transaction breaks the hash chain downstream
-A genuine Solidity smart contract deployed to the Sepolia testnet and interacted with via web3.py
-Real, measured gas costs for contract deployment and execution
-Project structure
+**A working mini-blockchain built from scratch in Python, paired with a live Ethereum smart contract on Sepolia.**
+
+Built for the *Fundamentals of Cryptocurrency* course — covering cryptography, consensus, Bitcoin, and Ethereum through working code, not just theory.
+
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![Solidity](https://img.shields.io/badge/Solidity-%5E0.8.19-363636.svg)](https://soliditylang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Network](https://img.shields.io/badge/Network-Sepolia%20Testnet-purple.svg)](https://sepolia.etherscan.io/)
+
+</div>
+
+---
+
+## Why this project
+
+Most cryptocurrency coursework stays theoretical — diagrams of what a blockchain *is*, without ever building one. This project takes the opposite approach: every core concept from the course is implemented as working, runnable code.
+
+| Concept | Where it lives |
+|---|---|
+| SHA-256 hashing & Proof-of-Work | `blockchain/block.py` |
+| ECDSA (secp256k1) signatures | `blockchain/wallet.py` |
+| Merkle trees & proofs | `blockchain/merkle.py` |
+| UTXO-based ledger | `blockchain/transaction.py` |
+| Chain validation & tamper detection | `blockchain/chain.py` |
+| Smart contracts & gas mechanics | `contracts/Voting.sol`, `scripts/interact.py` |
+
+---
+
+## What it actually does
+
+- ⛏️ **Mines real blocks** using SHA-256 Proof-of-Work with adjustable difficulty, logging how mining time grows exponentially as difficulty increases
+- 🔐 **Signs & verifies transactions** using real ECDSA key pairs on the secp256k1 curve — the same curve Bitcoin uses
+- 💰 **Tracks balances via UTXOs**, not a simple counter — spendable balance is computed from unspent outputs, exactly like Bitcoin
+- 🌳 **Builds Merkle trees** for transaction bundling, with proof generation and verification
+- 🛡️ **Detects tampering** — modifying any transaction breaks the hash chain for every block after it
+- 📜 **Deploys a real smart contract** (`Voting.sol`) to the Sepolia testnet and interacts with it live via `web3.py`
+- ⛽ **Measures real gas costs** for deployment, voting, and reads — actual numbers from a live testnet, not estimates
+
+---
+
+## Project structure
+
+```
 from-hash-to-contract/
 ├── blockchain/
 │   ├── block.py          # Block structure, hashing, PoW mining loop
@@ -30,49 +62,15 @@ from-hash-to-contract/
 │   └── project_report.pdf
 ├── requirements.txt
 └── README.md
-Part A — Bitcoin-style blockchain (Python)
-Block structure
-Each block contains:
+```
 
-index, timestamp, transactions, previous_hash, merkle_root, nonce, hash
-Proof-of-Work
-Miners repeatedly vary the nonce and rehash the block header until the resulting hash is below a target difficulty threshold. Difficulty is configurable, and mining time is logged to show the exponential cost increase as difficulty rises.
+---
 
-python blockchain/demo.py --mine --difficulty 4
-Wallets & signatures
-Wallets generate a real ECDSA key pair on the secp256k1 curve. Transactions are signed with the private key and verified against the public key before being accepted into a block — any tampering invalidates the signature.
+## Quick start
 
-UTXO model
-Balances are not stored directly. Instead, each wallet's spendable balance is the sum of unspent transaction outputs (UTXOs) it can unlock, mirroring how Bitcoin actually tracks ownership.
-
-Tamper detection
-Modifying any transaction inside a mined block changes that block's hash, which breaks the previous_hash link in every subsequent block — demonstrated live in the demo script.
-
-python blockchain/demo.py --tamper --block 3
-Merkle proofs
-Transactions in a block are hashed into a Merkle tree. A transaction's inclusion in a block can be verified using just its Merkle proof, without needing the full block.
-
-Part B — Ethereum smart contract (Solidity)
-Contract: Voting.sol
-A decentralized voting contract deployed on the Sepolia testnet, supporting:
-
-Registering candidates
-Casting votes (one per address)
-Reading live vote tallies
-Deployment
-Deployed using Hardhat/Remix. Contract address and transaction hash are viewable on Sepolia Etherscan.
-
-Interaction
-scripts/interact.py uses web3.py to:
-
-Connect to the deployed contract
-Cast a vote
-Read updated results
-Log the gas cost of each operation (deployment vs. voting vs. reading)
-python scripts/interact.py --vote "Candidate A"
-Setup
+```bash
 # Clone the repo
-git clone https://github.com/mohammadsameem/crypto-project.git
+git clone <repository-url>
 cd from-hash-to-contract
 
 # Install dependencies
@@ -81,22 +79,84 @@ pip install -r requirements.txt
 # Run the blockchain demo
 python blockchain/demo.py
 
-# Interact with the deployed contract (requires .env with RPC URL + private key)
+# Interact with the deployed contract (requires .env — see below)
 python scripts/interact.py
-Requirements
-Python 3.9+
-ecdsa
-web3
-Sepolia testnet RPC URL (e.g. from Infura or Alchemy)
-A Sepolia test wallet with test ETH (from a faucet)
-Demo walkthrough
-Mine a block and show PoW timing at increasing difficulty
-Tamper with a transaction and show downstream chain invalidation
-Sign & verify a transaction using ECDSA
-Deploy & vote on the live Sepolia contract
-Compare gas costs across contract operations
-Disclaimer
-This project is for educational purposes only. It runs on a single node with no P2P networking, and the smart contract is deployed to a public testnet using test ETH with no real monetary value.
+```
 
-License
+### Requirements
+
+- Python 3.9+
+- `ecdsa`
+- `web3`
+- A Sepolia RPC URL (free from [Alchemy](https://alchemy.com) or [Infura](https://infura.io))
+- A Sepolia test wallet funded with test ETH from a [faucet](https://sepoliafaucet.com)
+
+### Environment variables
+
+Create a `.env` file in the project root:
+
+```
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/your-key
+PRIVATE_KEY=your-test-wallet-private-key
+CONTRACT_ADDRESS=0x...your-deployed-contract-address
+```
+
+⚠️ Use a dedicated test wallet only. Never put a private key holding real funds in a `.env` file.
+
+---
+
+## Part A — Bitcoin-style blockchain
+
+**Block structure**
+```
+index, timestamp, transactions, previous_hash, merkle_root, nonce, hash
+```
+
+**Mine a block:**
+```bash
+python blockchain/demo.py --mine --difficulty 4
+```
+Miners repeatedly vary the nonce and rehash the block header until the digest falls below the target difficulty — the same mechanism Bitcoin uses, with mining time logged to show the exponential cost curve.
+
+**See tamper detection in action:**
+```bash
+python blockchain/demo.py --tamper --block 3
+```
+Altering any transaction changes that block's hash, breaking the `previous_hash` link in every subsequent block — the chain immediately reports itself as invalid.
+
+**UTXO model:** balances aren't stored directly. A wallet's spendable balance is the sum of unspent transaction outputs (UTXOs) it can unlock — mirroring how Bitcoin actually tracks ownership.
+
+**Merkle proofs:** transactions are hashed into a Merkle tree, so any transaction's inclusion in a block can be verified with just its proof path, without needing the full block.
+
+---
+
+## Part B — Ethereum smart contract
+
+**Contract: `Voting.sol`** — a decentralized voting contract deployed on Sepolia, supporting:
+- Registering candidates (owner-only)
+- Casting one vote per address
+- Reading live vote tallies
+
+**Deployment:** deployed via Remix/Hardhat using an injected MetaMask provider. Contract address and creation transaction are publicly viewable on [Sepolia Etherscan](https://sepolia.etherscan.io).
+
+**Interaction:**
+```bash
+python scripts/interact.py --vote "Candidate A"
+```
+`scripts/interact.py` uses `web3.py` to connect to the deployed contract, cast a vote, read updated results, and log the gas cost of each operation — deployment, voting, and reads all measured separately.
+
+---
+
+## Demo walkthrough
+
+1. Mine a block and show PoW timing scale with difficulty
+2. Tamper with a transaction and show downstream chain invalidation
+3. Sign and verify a transaction with ECDSA
+4. Deploy and vote on the live Sepolia contract
+5. Compare real gas costs across contract operations
+
+---
+
+## License
+
 MIT
