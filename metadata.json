@@ -1,0 +1,6 @@
+{
+  "name": "From Hash to Contract",
+  "description": "Educational cryptocurrency platform featuring a Bitcoin-style Python mini-blockchain and an Ethereum Solidity voting smart contract on Sepolia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
