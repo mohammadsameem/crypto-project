@@ -69,7 +69,7 @@ from-hash-to-contract/
 
 ```bash
 # Clone the repo
-git clone <repository-url>
+git clone https://github.com/mohammadsameem/crypto-project.git
 cd from-hash-to-contract
 
 # Install dependencies
